@@ -73,6 +73,7 @@ public class ImbalanceSampler
             ImbalanceState otherState)
     {
         // do nothing
+        throw new UnsupportedOperationException("Imbalance Sampler should use the OVER clause, NOT GROUP BY");
     }
 
     @OutputFunction(StandardTypes.DOUBLE)
