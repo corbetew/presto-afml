@@ -80,9 +80,7 @@ public class ImbalanceSampler
     public static void output(ImbalanceState state, BlockBuilder out)
     {
         long barStart = state.getBarStart();
-        //double crit = state.getExpImbalance();
         DOUBLE.writeDouble(out, barStart);
-        //DOUBLE.writeDouble(out, state.getB());
     }
 
     public static int calculateB(double price, ImbalanceState state)
