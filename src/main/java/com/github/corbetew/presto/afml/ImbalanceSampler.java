@@ -49,10 +49,12 @@ public class ImbalanceSampler
             state.setInitialized(true);
         }
         else {
-            state.setImbalance(state.getImbalance() + criterion);
+            state.setB(calculateB(price, state));
+            state.setLastPrice(price);
+            state.setImbalance(state.getImbalance() + state.getB() * criterion);
             state.setTicks(state.getTicks() + 1);
             // ewm of the Eb
-            state.setEb(state.getEb() + alpha * (criterion - state.getEb()));
+            state.setEb(state.getEb() + alpha * (state.getB() * criterion - state.getEb()));
         }
 
         if (abs(state.getImbalance()) >= state.getExpImbalance()) {
@@ -70,7 +72,7 @@ public class ImbalanceSampler
             ImbalanceState state,
             ImbalanceState otherState)
     {
-        //state.setPrevious(state.getPrevious() + otherState.getCurrent());
+        // do nothing
     }
 
     @OutputFunction(StandardTypes.DOUBLE)
@@ -79,5 +81,18 @@ public class ImbalanceSampler
         long barStart = state.getBarStart();
         //double crit = state.getExpImbalance();
         DOUBLE.writeDouble(out, barStart);
+        //DOUBLE.writeDouble(out, state.getB());
+    }
+
+    public static int calculateB(double price, ImbalanceState state)
+    {
+        double newB = (price - state.getLastPrice());
+
+        if (newB != 0.) {
+            return (int) (abs(newB) / newB);
+        }
+        else {
+            return state.getB();
+        }
     }
 }
